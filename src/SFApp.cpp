@@ -18,6 +18,12 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
     aliens.push_back(alien);
   }
 
+auto debris = make_shared<SFAsset>(SFASSET_DEBRIS, sf_window);
+auto debris_pos = Point2(canvas_w - 100, 300.0f);
+debris->SetPosition(debris_pos);
+debrise.push_back(debris);
+
+
   auto coin = make_shared<SFAsset>(SFASSET_COIN, sf_window);
   auto pos  = Point2(320.0f, 480.0f);
   coin->SetPosition(pos);
@@ -83,6 +89,11 @@ void SFApp::OnUpdateWorld() {
 	c->HandleCollision(); }
   }
 
+//Debris
+	for(auto d: debrise){
+	d->GoSouth();
+	}
+
   // Update enemy positions
   for(auto a : aliens) {
     // do something here
@@ -96,6 +107,12 @@ void SFApp::OnUpdateWorld() {
         a->HandleCollision();
       }
     }
+	for(auto d : debrise){
+	if(p->CollidesWith(d)){
+	 p->HandleCollision();
+	d->HandleCollision();
+}
+ }
   }
 
   // remove dead aliens (the long way)
@@ -122,6 +139,11 @@ void SFApp::OnRender() {
   for(auto a: aliens) {
     if(a->IsAlive()) {a->OnRender();}
   }
+
+	for(auto d: debrise) {
+ if(d->IsAlive()) {d->OnRender();}
+}
+ 
 
   for(auto c: coins) {
     if(c->IsAlive()) {c->OnRender();}
