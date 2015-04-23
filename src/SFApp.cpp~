@@ -127,8 +127,8 @@ void SFApp::OnRender() {
     if(c->IsAlive()) {c->OnRender();}
 else {
 int w, h;
-SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
-auto pos = Point2 (rand() % (20 + 500), rand() %(200 + 400));
+SDL_GetRendererOutputSize(sf_window->getRenderer(),&w, &h);
+auto pos = Point2 (rand() % (30 + 600, rand() %(300 + 500));
 c->SetPosition(pos);
 c->SetAlive();
 }
