@@ -6,7 +6,7 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
 
   app_box = make_shared<SFBoundingBox>(Vector2(canvas_w, canvas_h), canvas_w, canvas_h);
   player  = make_shared<SFAsset>(SFASSET_PLAYER, sf_window);
-  auto player_pos = Point2(canvas_w, 88.0f);
+  auto player_pos = Point2(canvas_w/2, 88.0f);
   player->SetPosition(player_pos);
 
   const int number_of_aliens = 10;
@@ -84,13 +84,15 @@ void SFApp::OnUpdateWorld() {
     p->GoNorth();
   }
 
+// coin movement and collision
   for(auto c: coins) {
     c->CoinN();
 	if(player->CollidesWith(c)) {
 	c->HandleCollision(); }
   }
 
-//Debris
+//Debris movement and collision
+
 	for(auto d: debrise){
 	d->DebrisN();
 	}
@@ -100,7 +102,7 @@ void SFApp::OnUpdateWorld() {
     a->AlienN();
   }
 
-  // Detect collisions
+// Detection of projectile collisions with aliens
   for(auto p : projectiles) {
     for(auto a : aliens) {
       if(p->CollidesWith(a)) {
@@ -108,6 +110,7 @@ void SFApp::OnUpdateWorld() {
         a->HandleCollision();
       }
     }
+// Detection of projectile collisions with debris
 	for(auto d : debrise){
 	if(p->CollidesWith(d)){
 	 p->HandleCollision();
@@ -117,14 +120,14 @@ void SFApp::OnUpdateWorld() {
   }
 
   // remove dead aliens (the long way)
-  list<shared_ptr<SFAsset>> tmp;
-  for(auto a : aliens) {
-    if(a->IsAlive()) {
-      tmp.push_back(a);
-    }
-  }
-  aliens.clear();
-  aliens = list<shared_ptr<SFAsset>>(tmp);
+ // list<shared_ptr<SFAsset>> tmp;
+//  for(auto a : aliens) {
+//    if(a->IsAlive()) {
+//      tmp.push_back(a);
+//    }
+//  }
+//  aliens.clear();
+ // aliens = list<shared_ptr<SFAsset>>(tmp);
 }
 
 void SFApp::OnRender() {
@@ -137,30 +140,49 @@ void SFApp::OnRender() {
     if(p->IsAlive()) {p->OnRender();}
   }
 
+// aliens generation
+
   for(auto a: aliens) {
-    if(a->IsAlive()) {a->OnRender();}
-  }
+auto aPos = a->GetPosition();
+if(a->IsAlive() && !(aPos.getY() < -30.0f)) {
+a->OnRender(); }
+else {
+int w, h;
+SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
+auto pos = Point2 (rand() % (20 + 500), 550);
+a->SetPosition(pos);
+a->SetAlienAlive();
+}}
+
+// generation of debris
 
 	for(auto d: debrise) {
- if(d->IsAlive()) {d->OnRender();}
+auto dPos = d->GetPosition();
+if(d->IsAlive() && !(dPos.getY() < -30.0f)) {
+d->OnRender(); }
+
 else {
  int w, h;
  SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
 auto pos = Point2 (rand() % (500), 550);
 d->SetPosition(pos);
-d->SetAlive();
+d->SetDebrisAlive();
 }
 }
  
+// generation of coin 
 
-  for(auto c: coins) {
-    if(c->IsAlive()) {c->OnRender();}
+for(auto c: coins) {
+auto cPos = c->GetPosition();
+if(c->IsAlive() && !(cPos.getY() < -30.0f)) {
+c->OnRender(); }
+
 else {
 int w, h;
 SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
 auto pos = Point2 (rand() % (20 + 500), 550);
 c->SetPosition(pos);
-c->SetAlive();
+c->SetCoinAlive();
 }
   }
 

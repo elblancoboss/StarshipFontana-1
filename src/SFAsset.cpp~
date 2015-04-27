@@ -104,7 +104,7 @@ void SFAsset::OnRender() {
 
 void SFAsset::GoWest() {
   Vector2 c = *(bbox->centre) + Vector2(-20.0f, 0.0f);
-  if(!(c.getX() < 0)) {
+  if(!(c.getX() < 20)) {
     bbox->centre.reset();
     bbox->centre = make_shared<Vector2>(c);
   }
@@ -115,7 +115,7 @@ void SFAsset::GoEast() {
   SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
 
   Vector2 c = *(bbox->centre) + Vector2(20.0f, 0.0f);
-  if(!(c.getX() > w)) {
+  if(!(c.getX() > 620)) {
     bbox->centre.reset();
     bbox->centre = make_shared<Vector2>(c);
   }
@@ -128,43 +128,43 @@ void SFAsset::GoNorth() {
   bbox->centre = make_shared<Vector2>(c);
   }}
 
+void SFAsset::GoSouth() {
+int w, h;
+SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
+ Vector2 c = *(bbox->centre) + Vector2(0.0f, -20.0f);
+if(!(c.getY() < 60.0f)) {
+bbox->centre.reset();
+bbox->centre = make_shared<Vector2>(c);
+}}
+
 void SFAsset::CoinN() {
 int w, h;
 SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
 
-Vector2 c = *(bbox->centre) + Vector2(0.0f, -2.0f);
-if (!(c.getY() > 70.0f)) {
-	bbox ->centre.reset();
-	bbox->centre = make_shared<Vector2>(c);
-}
-}
+ Vector2 c = *(bbox->centre) + Vector2(0.0f, -1.0f);
+if(!(c.getY() < -50.0f)) {
+ bbox->centre.reset();
+ bbox->centre = make_shared<Vector2>(c);
+}}
 
 void SFAsset::DebrisN() {
 int w, h;
 SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
 
  Vector2 c = *(bbox->centre) + Vector2(0.0f, -2.0f);
-if(!(c.getY() < 60.0f)) {
+if(!(c.getY() < -50.0f)) {
  bbox->centre.reset();
  bbox->centre = make_shared<Vector2>(c);
 }}
+
+
 
 void SFAsset::AlienN() {
-int w, h;
-SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
-
- Vector2 c = *(bbox->centre) + Vector2(0.0f, -2.0f);
-if(!(c.getY() < 60.0f)) {
- bbox->centre.reset();
- bbox->centre = make_shared<Vector2>(c);
-}}
-
-void SFAsset::GoSouth() {
   int w, h;
   SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
 
-  Vector2 c = *(bbox->centre) + Vector2(0.0f, -20.0f);
-  if(!(c.getY() > h)) {
+  Vector2 c = *(bbox->centre) + Vector2(0.0f, -2.0f);
+if(!(c.getY() < -50.0f)) {
     bbox->centre.reset();
     bbox->centre = make_shared<Vector2>(c);
   }}
@@ -182,12 +182,16 @@ void SFAsset::SetNotAlive() {
   type = SFASSET_DEAD;
 }
 
-void SFAsset::SetAlive() {
+void SFAsset::SetCoinAlive() {
 	type = SFASSET_COIN;
 }
 
-void SFAsset::SetDAlive() {
+void SFAsset::SetDebrisAlive() {
  type = SFASSET_DEBRIS;
+}
+
+void SFAsset::SetAlienAlive() {
+ type = SFASSET_ALIEN;
 }
 
 bool SFAsset::IsAlive() {
