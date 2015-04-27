@@ -37,8 +37,11 @@ public:
   virtual void      GoWest();
   virtual void      GoNorth();
   virtual void      GoSouth();
-virtual void	CoinN();
-virtual void	SetAlive();
+  virtual void	CoinN();
+  virtual void DebrisN();
+  virtual void AlienN();
+  virtual void	SetAlive();
+  virtual void SetDAlive();
   virtual void      SetNotAlive();
   virtual bool      IsAlive();
   virtual void      HandleCollision();
