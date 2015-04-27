@@ -35,6 +35,8 @@ private:
 
   shared_ptr<SFAsset>        player;
   shared_ptr<SFBoundingBox>  app_box;
+list<shared_ptr<SFAsset> > background1s;
+list<shared_ptr<SFAsset> > background2;
   list<shared_ptr<SFAsset> > projectiles;
   list<shared_ptr<SFAsset> > aliens;
   list<shared_ptr<SFAsset> > coins;
@@ -43,6 +45,10 @@ list<shared_ptr<SFAsset> > debrise;
   list<shared_ptr<SFAsset> > walls;
 
   int fire;
+int PlayerHP = 100;
+ int Points = 0;
+ int AliensDead = 0;
+ int DebrisDead = 0;
 
   SFError OnInit();
 };

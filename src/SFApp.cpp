@@ -9,26 +9,38 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
   auto player_pos = Point2(canvas_w/2, 88.0f);
   player->SetPosition(player_pos);
 
-  const int number_of_aliens = 10;
-  for(int i=0; i<number_of_aliens; i++) {
-    // place an alien at width/number_of_aliens * i
-    auto alien = make_shared<SFAsset>(SFASSET_ALIEN, sf_window);
-    //auto pos = Point2 (rand() % (canvas_w-50), rand() %(canvas_h + 200));
-auto pos = Point2 (rand() % (20 + 500), 550);
-    alien->SetPosition(pos);
-    aliens.push_back(alien);
-  }
+// spawn of aliens
+ const int number_of_aliens = 5;
+ for(int i=0; i<number_of_aliens; i++) {
+ auto alien = make_shared<SFAsset>(SFASSET_ALIEN, sf_window);
+ auto pos = Point2 (rand() % (40 + 640), rand() %(600 + 3000));
+ alien->SetPosition(pos);
+ aliens.push_back(alien);
+}
 
-auto debris = make_shared<SFAsset>(SFASSET_DEBRIS, sf_window);
- auto debris_pos = Point2 (rand() % (20 + 500), 550);
+// spawn background1
+ auto background1 = make_shared<SFAsset>(SFASSET_BACKGROUND1, sf_window);
+ auto pos = Point2 (0,0);
+ background1->SetPosition(pos);
+ background1s.push_back(background1);
+
+ //spawn of debris
+ const int number_of_debris = 8;
+ for(int i=0; i<number_of_debris; i++) {
+ auto debris = make_shared<SFAsset>(SFASSET_DEBRIS, sf_window);
+ auto debris_pos = Point2 (rand() % (40 + 640), rand() %(600 + 3000));
  debris->SetPosition(debris_pos);
-debrise.push_back(debris);
+ debrise.push_back(debris);
+}
 
-
-  auto coin = make_shared<SFAsset>(SFASSET_COIN, sf_window);
-  auto pos  = Point2(320.0f, 550.0f);
-  coin->SetPosition(pos);
-  coins.push_back(coin);
+ //spawn of coins
+ const int number_of_coins = 3;
+ for(int i=0; i<number_of_coins; i++) {
+ auto coin = make_shared<SFAsset>(SFASSET_COIN, sf_window);
+ auto pos = Point2 (rand() % (40 + 640), rand() %(600 + 3000));
+ coin->SetPosition(pos);
+ coins.push_back(coin);
+}
 }
 
 SFApp::~SFApp() {
@@ -45,25 +57,11 @@ void SFApp::OnEvent(SFEvent& event) {
     is_running = false;
     break;
   case SFEVENT_UPDATE:
-    OnUpdateWorld();
-    OnRender();
-    break;
-  case SFEVENT_PLAYER_LEFT:
-    player->GoWest();
-    break;
-  case SFEVENT_PLAYER_RIGHT:
-    player->GoEast();
-    break;
- case SFEVENT_PLAYER_UP:
-    player->GoNorth();
-    break;
-  case SFEVENT_PLAYER_DOWN:
-    player->GoSouth();
-    break;
-  case SFEVENT_FIRE:
-    fire ++;
-    FireProjectile();
-    break;
+OnUpdateWorld();
+ OnRender();
+break;
+default:
+break;
   }
 }
 
@@ -79,66 +77,132 @@ int SFApp::OnExecute() {
 }
 
 void SFApp::OnUpdateWorld() {
+
+const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
+ if(keyboardState[SDL_SCANCODE_DOWN]) {
+ player->GoSouth();
+ }
+ if(keyboardState[SDL_SCANCODE_UP]) {
+ player->GoNorth();
+ }
+ if(keyboardState[SDL_SCANCODE_LEFT]) {
+ player->GoWest();
+ }
+ if(keyboardState[SDL_SCANCODE_RIGHT]) {
+ player->GoEast();
+ }
+ if(keyboardState[SDL_SCANCODE_SPACE]) {
+ fire ++;
+ FireProjectile();
+ }
+
+int w, h;
+SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
+
   // Update projectile positions
   for(auto p: projectiles) {
     p->GoNorth();
-  }
+// Remove projectile when it hits the top of the screen
+ auto p_pos = p->GetPosition();
+ if(p_pos.getY() > h) {
+ p->HandleCollision();
+ }
+ }
 
 // coin movement and collision
   for(auto c: coins) {
     c->CoinN();
-	if(player->CollidesWith(c)) {
-	c->HandleCollision(); }
-  }
-
-//Debris movement and collision
-
-	for(auto d: debrise){
-	d->DebrisN();
-	}
-
-  // Update enemy positions
-  for(auto a : aliens) {
-    a->AlienN();
-  }
-
-// Detection of projectile collisions with aliens
-  for(auto p : projectiles) {
-    for(auto a : aliens) {
-      if(p->CollidesWith(a)) {
-        p->HandleCollision();
-        a->HandleCollision();
-      }
-    }
-// Detection of projectile collisions with debris
-	for(auto d : debrise){
-	if(p->CollidesWith(d)){
-	 p->HandleCollision();
-	d->HandleCollision();
-}
+// Check player collision with coin
+ if(player->CollidesWith(c)) {
+ cout << "Collected a coin" << endl;
+ Points = Points + 100;
+ c->HandleCollision();
  }
-  }
+ }
 
-  // remove dead aliens (the long way)
- // list<shared_ptr<SFAsset>> tmp;
-//  for(auto a : aliens) {
-//    if(a->IsAlive()) {
-//      tmp.push_back(a);
-//    }
-//  }
-//  aliens.clear();
- // aliens = list<shared_ptr<SFAsset>>(tmp);
+// Update alien positions
+ for(auto a : aliens) {
+ a->AlienN();
+// Check player collision with alien
+ if(player->CollidesWith(a)) {
+ cout << "Hit by alien!" << endl;
+ cout << "HP"<< PlayerHP << endl;
+ PlayerHP = PlayerHP - 15;
+ a->HandleCollision();
+ }
+ }
+
+// Update enemy positions
+ for(auto d : debrise) {
+d->DebrisN();
+// Check player collision with alien
+ if(player->CollidesWith(d)) {
+ cout << "Hit by debris!" << endl;
+ cout << "HP"<< PlayerHP << endl;
+ PlayerHP = PlayerHP - 5;
+ d->HandleCollision();
+ }
 }
+
+// Detect projectile collision with alien
+ for(auto p : projectiles) {
+ for(auto a : aliens) {
+ if(p->CollidesWith(a)) {
+ cout << "Killed an enemy!" << endl;
+ cout << "Score:" << Points << endl;
+ Points = Points + 5;
+p->HandleCollision();
+ a->HandleCollision();
+ }
+ }
+ }
+  
+
+
+// Detect projectile collision with debris
+ for(auto p : projectiles) {
+ for(auto d : debrise) {
+ if(p->CollidesWith(d)) {
+ cout << "destroyed debris!" << endl;
+ Points = Points + 1;
+ p->HandleCollision();
+ d->HandleCollision();
+}
+}
+}
+
+// Remove all dead projectiles
+ list<shared_ptr<SFAsset>> projTemp;
+ for(auto p : projectiles) {
+ if(p->IsAlive()) {
+ projTemp.push_back(p);
+ }
+ else{
+ fire--;
+ }
+ }
+ projectiles.clear();
+ projectiles = list<shared_ptr<SFAsset>>(projTemp);
+}
+
 
 void SFApp::OnRender() {
   SDL_RenderClear(sf_window->getRenderer());
 
+//render background 1
+for (auto b1:background1s){
+ b1->OnRender();
+ }
+
   // draw the player
   player->OnRender();
 
-  for(auto p: projectiles) {
-    if(p->IsAlive()) {p->OnRender();}
-  }
+// draw projectiles
+ for(auto p: projectiles) {
+ if(p->IsAlive()) {
+ p->OnRender();
+}
+}
 
 // aliens generation
 
@@ -184,15 +248,16 @@ auto pos = Point2 (rand() % (20 + 500), 550);
 c->SetPosition(pos);
 c->SetCoinAlive();
 }
-  }
+}
 
   // Switch the off-screen buffer to be on-screen
   SDL_RenderPresent(sf_window->getRenderer());
 }
 
-void SFApp::FireProjectile() {
+ void SFApp::FireProjectile() {
   auto pb = make_shared<SFAsset>(SFASSET_PROJECTILE, sf_window);
   auto v  = player->GetPosition();
   pb->SetPosition(v);
   projectiles.push_back(pb);
+
 }
