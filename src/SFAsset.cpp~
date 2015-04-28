@@ -16,22 +16,22 @@ SFAsset::SFAsset(SFASSETTYPE type, std::shared_ptr<SFWindow> window): type(type)
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/alien.png");
     break;
   case SFASSET_COIN:
-    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/coin.png");
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/snickers.png");
     break;
 case SFASSET_DEBRIS:
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/debris.png");
     break;
-case SFASSET_ALIENFIRE:
-    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/afire.png");
+case SFASSET_STAR:
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/star.png");
     break;
-case SFASSET_WALL:
-    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/wall.png");
-    break;
-case SFASSET_BACKGROUND1:
-sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/background.png");
+case SFASSET_HEALTHPACK:
+ sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/health.png");
+break;
+case SFASSET_HEALTHBAR:
+ sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/alienfire.png");
  break;
-case SFASSET_BACKGROUND2:
-sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/background2.png");
+case SFASSET_GAMEOVER:
+ sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/gameover.png");
  break;
   }
 
@@ -202,11 +202,7 @@ shared_ptr<SFBoundingBox> SFAsset::GetBoundingBox() {
   return bbox;
 }
 
-void SFAsset::GameOver(){
 
- cout <<"You have died";
- std::exit;
-}
 
 void SFAsset::SetNotAlive() {
   type = SFASSET_DEAD;
@@ -224,12 +220,20 @@ void SFAsset::SetAlienAlive() {
  type = SFASSET_ALIEN;
 }
 
+void SFAsset::SetHealthPackAlive() {
+ type = SFASSET_HEALTHPACK;
+}
+
+void SFAsset::SetStarAlive() {
+ type = SFASSET_STAR;
+}
+
 bool SFAsset::IsAlive() {
   return (SFASSET_DEAD != type);
 }
 
 void SFAsset::HandleCollision() {
-  if(SFASSET_PROJECTILE == type || SFASSET_ALIEN == type || SFASSET_COIN == type || SFASSET_DEBRIS == type || SFASSET_ALIENFIRE == type || SFASSET_WALL == type || SFASSET_BACKGROUND1 == type || SFASSET_BACKGROUND2 == type) {
+  if(SFASSET_PROJECTILE == type || SFASSET_ALIEN == type || SFASSET_COIN == type || SFASSET_DEBRIS == type || SFASSET_STAR == type || SFASSET_HEALTHPACK == type || SFASSET_HEALTHBAR == type) {
     SetNotAlive();
   }
 }
