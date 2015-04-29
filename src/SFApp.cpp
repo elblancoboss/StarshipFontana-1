@@ -14,25 +14,25 @@ gameover = make_shared<SFAsset>(SFASSET_GAMEOVER, sf_window);
  gameover->SetPosition(go_pos);
 
 // spawn of aliens
- const int number_of_aliens = 7;
- for(int i=0; i<number_of_aliens; i++) {
- auto alien = make_shared<SFAsset>(SFASSET_ALIEN, sf_window);
- auto pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
- alien->SetPosition(pos);
- aliens.push_back(alien);
+const int number_of_aliens = 30;
+for(int i=0; i<number_of_aliens; i++) {
+auto alien = make_shared<SFAsset>(SFASSET_ALIEN, sf_window);
+auto pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
+alien->SetPosition(pos);
+aliens.push_back(alien);
+}
+//spawn of Alien Missiles
+const int number_of_debris = 30;
+for(int i=0; i<number_of_debris; i++) {
+auto debris = make_shared<SFAsset>(SFASSET_DEBRIS, sf_window);
+auto debris_pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
+debris->SetPosition(debris_pos);
+debrise.push_back(debris);
 }
 
- //spawn of debris
- const int number_of_debris = 10;
- for(int i=0; i<number_of_debris; i++) {
- auto debris = make_shared<SFAsset>(SFASSET_DEBRIS, sf_window);
- auto debris_pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
- debris->SetPosition(debris_pos);
- debrise.push_back(debris);
-}
 
  //spawn of coins
- const int number_of_coins = 3;
+ const int number_of_coins = 2;
  for(int i=0; i<number_of_coins; i++) {
  auto coin = make_shared<SFAsset>(SFASSET_COIN, sf_window);
  auto pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
@@ -204,7 +204,7 @@ d->DebrisN();
  if(player->CollidesWith(d)) {
  PlayerHP = PlayerHP - 5;
  d->HandleCollision();
- cout << "Hit by debris!" << endl;
+ cout << "Hit by Alien Missile!" << endl;
  cout << "HP"<< PlayerHP << endl;
  }
 }
@@ -229,11 +229,11 @@ p->HandleCollision();
  for(auto p : projectiles) {
  for(auto d : debrise) {
  if(p->CollidesWith(d)) {
-HealthPackSeed = HealthPackSeed + 1;
- Points = Points + 1;
+HealthPackSeed = HealthPackSeed + 3;
+ Points = Points + 3;
  p->HandleCollision();
  d->HandleCollision();
- cout << "destroyed debris!" << endl;
+ cout << "destroyed Alien Missile!" << endl;
 cout << "Score:" << Points << endl;
 }
 }
@@ -273,17 +273,12 @@ gameover->OnRender();
 }
 }
 
-// draw health
- for(auto hb: healthbars){
- hb->OnRender();
-}
-
 // draw healthpacks
  for(auto hp: healthpacks) {
  auto hpPos = hp->GetPosition();
- // if the player gains 1000 points - spawn a health pack
- if( HealthPackSeed > 1000){
- HealthPackSeed = HealthPackSeed - 1000;
+ // if the player gains 500 points - spawn a health pack
+ if( HealthPackSeed > 500){
+ HealthPackSeed = HealthPackSeed - 500;
  int w, h;
  SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
  auto pos = Point2 (rand() % (500), 600);
@@ -307,24 +302,26 @@ gameover->OnRender();
 // aliens generation
 
   for(auto a: aliens) {
-auto aPos = a->GetPosition();
-if(a->IsAlive() && !(aPos.getY() < -30.0f)) {
-a->OnRender(); }
-else {
-int w, h;
-SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
-auto pos = Point2 (rand() % (40 + 600), 3000);
-a->SetPosition(pos);
-a->SetAlienAlive();
-}}
 
-// generation of debris
+    auto aPos = a->GetPosition();
+    if(a->IsAlive() && !(aPos.getY() < -30.0f)) {
+      a->OnRender();
+    }
+    else {
+      int w, h;
+      SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
+      auto pos = Point2 (rand() % (40 + 600), 3000);
+      a->SetPosition(pos);
+      a->SetAlienAlive();
+    }
+  }
+
+// generation of alien missiles
 
 	for(auto d: debrise) {
 auto dPos = d->GetPosition();
 if(d->IsAlive() && !(dPos.getY() < -30.0f)) {
 d->OnRender(); }
-
 else {
  int w, h;
  SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
@@ -333,6 +330,7 @@ d->SetPosition(pos);
 d->SetDebrisAlive();
 }
 }
+
  
 // generation of coin 
 
