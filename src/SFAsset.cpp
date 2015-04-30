@@ -30,6 +30,9 @@ SFAsset::SFAsset(SFASSETTYPE type, std::shared_ptr<SFWindow> window): type(type)
   case SFASSET_GAMEOVER:
   sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/gameover.png");
   break;
+    case SFASSET_WALL:
+  sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/bwall.png");
+  break;
   }
 
   if(!sprite) {
@@ -178,8 +181,6 @@ if(!(c.getY() < -50.0f)) {
  bbox->centre = make_shared<Vector2>(c);
 }}
 
-
-
 void SFAsset::AlienN() {
   int w, h;
   SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
@@ -190,7 +191,6 @@ if(!(c.getY() < -50.0f)) {
     bbox->centre = make_shared<Vector2>(c);
   }}
 
-
 bool SFAsset::CollidesWith(shared_ptr<SFAsset> other) {
   return bbox->CollidesWith(other->bbox);
 }
@@ -198,8 +198,6 @@ bool SFAsset::CollidesWith(shared_ptr<SFAsset> other) {
 shared_ptr<SFBoundingBox> SFAsset::GetBoundingBox() {
   return bbox;
 }
-
-
 
 void SFAsset::SetNotAlive() {
   type = SFASSET_DEAD;

@@ -13,32 +13,32 @@ SFEvent::SFEvent(const SDL_Event & event) {
     break;
   case SDL_KEYDOWN:
     switch (event.key.keysym.sym) {
-    case SDLK_LEFT:
+  case SDLK_LEFT:
       code = SFEVENT_PLAYER_LEFT;
       break;
-    case SDLK_RIGHT:
+  case SDLK_RIGHT:
       code = SFEVENT_PLAYER_RIGHT;
       break;
-case SDLK_UP:
+  case SDLK_UP:
       code = SFEVENT_PLAYER_UP;
       break;
-    case SDLK_DOWN:
+  case SDLK_DOWN:
       code = SFEVENT_PLAYER_DOWN;
       break;
-    case SDLK_SPACE:
+  case SDLK_SPACE:
       code = SFEVENT_FIRE;
       break;
-    case SDLK_q:
+  case SDLK_q:
       code = SFEVENT_QUIT;
       break;
-case SDLK_p:
- code = SFEVENT_PAUSE;
- break;
- case SDLK_r:
- code = SFEVENT_RESTART;
- break;
+  case SDLK_p:
+      code = SFEVENT_PAUSE;
+      break;
+  case SDLK_r:
+      code = SFEVENT_RESTART;
+      break;
     }
-    break;
+      break;
   default:
     code = SFEVENT_NULL;
     break;

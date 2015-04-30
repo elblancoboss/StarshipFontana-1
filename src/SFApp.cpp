@@ -33,7 +33,7 @@ alienmissiles.push_back(alienmissile);
 
 
  //spawn of coins
- const int number_of_coins = 2;
+ const int number_of_coins = 1;
  for(int i=0; i<number_of_coins; i++) {
  auto coin = make_shared<SFAsset>(SFASSET_COIN, sf_window);
  auto pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
@@ -59,7 +59,12 @@ healthpacks.push_back(healthpack);
  stars.push_back(star);
  }
 
-
+ //spawn of walls
+ for(int i=2; i<5; i++) {
+ auto wall = make_shared<SFAsset>(SFASSET_WALL, sf_window);
+ auto pos = Point2(100 * i, 400.0f);
+ wall->SetPosition(pos);
+ walls.push_back(wall);}
 }
 
 
@@ -125,16 +130,31 @@ void SFApp::OnUpdateWorld() {
 const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
  if(keyboardState[SDL_SCANCODE_DOWN]) {
  player->GoSouth();
+ for( auto w : walls){ 
+ if(player->CollidesWith(w)){
+player->GoNorth();}
+ }
  }
  if(keyboardState[SDL_SCANCODE_UP]) {
  player->GoNorth();
+  for( auto w : walls){ 
+  if(player->CollidesWith(w)){
+player->GoSouth();}
+ }
  }
  if(keyboardState[SDL_SCANCODE_LEFT]) {
  player->GoWest();
+  for( auto w : walls){ 
+  if(player->CollidesWith(w)){
+player->GoEast();}
+ }
  }
  if(keyboardState[SDL_SCANCODE_RIGHT]) {
  player->GoEast();
- 
+ for( auto w : walls){ 
+ if(player->CollidesWith(w)){
+player->GoWest();}
+ }
  }
 
 
@@ -167,7 +187,7 @@ for(auto p: projectiles) {
  for(auto hp : healthpacks){
  hp->CoinN();
 
-// check player collision with healthpack
+// when player collects health you gaon +25 health
  if(player->CollidesWith(hp)) {
  PlayerHP = PlayerHP + 25;
  hp->HandleCollision();
@@ -180,12 +200,12 @@ for(auto p: projectiles) {
   for(auto c: coins) {
     c->CoinN();
 
-// Check player collision with coin
+// when player collects a coin gives you +250 points boost!
  if(player->CollidesWith(c)) {
- Points = Points + 100;
-HealthPackSeed = HealthPackSeed + 100;
+ Points = Points + 250;
+ HealthPackSeed = HealthPackSeed + 250;
  c->HandleCollision();
-cout << "Score Boost!" << endl;
+ cout << "Score Boost!" << endl;
  cout << "Score:" << Points << endl;
  }
  }
@@ -194,7 +214,7 @@ cout << "Score Boost!" << endl;
  for(auto a : aliens) {
  a->AlienN();
 
-// Check player collision with alien
+// Check player collision with alien, a collition with an alien will take -10 health
  if(player->CollidesWith(a)) {
  PlayerHP = PlayerHP - 10;
  a->HandleCollision();
@@ -205,9 +225,9 @@ cout << "Hit by alien!" << endl;
 
 // Update enemy positions
  for(auto d : alienmissiles) {
-d->AlienMissileN();
+ d->AlienMissileN();
 
-// Check player collision with alien
+// Check player collision with alien missile, a hit will cost -10 health.
  if(player->CollidesWith(d)) {
  PlayerHP = PlayerHP - 10;
  d->HandleCollision();
@@ -216,7 +236,7 @@ d->AlienMissileN();
  }
 }
 
-// Detect projectile collision with alien
+// Detect projectile collision with alien, killing an alien will give you +10 points.
  for(auto p : projectiles) {
  for(auto a : aliens) {
  if(p->CollidesWith(a)) {
@@ -232,11 +252,11 @@ d->AlienMissileN();
   
 
 
-// Detect projectile collision with alienmissile
+// Detect projectile collision with alienmissile, destroying an alien missile will give you +5 points.
  for(auto p : projectiles) {
  for(auto d : alienmissiles) {
  if(p->CollidesWith(d)) {
-HealthPackSeed = HealthPackSeed + 5;
+ HealthPackSeed = HealthPackSeed + 5;
  Points = Points + 5;
  p->HandleCollision();
  d->HandleCollision();
@@ -266,9 +286,14 @@ void SFApp::OnRender() {
   SDL_RenderClear(sf_window->getRenderer());
 
 
-  // draw the player
+//set walls to be written
+  for(auto w: walls){
+    w->OnRender();
+     }
+
+// draw the player
   if(player->IsAlive()) {
- player->OnRender();
+  player->OnRender();
  }
 
 gameover->OnRender();
@@ -309,9 +334,7 @@ gameover->OnRender();
  }
 
 // aliens generation
-
   for(auto a: aliens) {
-
     auto aPos = a->GetPosition();
     if(a->IsAlive() && !(aPos.getY() < -30.0f)) {
       a->OnRender();
@@ -326,7 +349,6 @@ gameover->OnRender();
   }
 
 // generation of alien missiles
-
 	for(auto d: alienmissiles) {
   auto dPos = d->GetPosition();
   if(d->IsAlive() && !(dPos.getY() < -30.0f)) {
@@ -340,13 +362,11 @@ gameover->OnRender();
 }
 }
 
- 
 // generation of coin 
 for(auto c: coins) {
 auto cPos = c->GetPosition();
 if(c->IsAlive() && !(cPos.getY() < -30.0f)) {
 c->OnRender(); }
-
 else {
 int w, h;
 SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
@@ -365,7 +385,7 @@ c->SetCoinAlive();
  else {
  int w, h;
  SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
-auto pos = Point2 (rand() % (40 + 600), 700);
+ auto pos = Point2 (rand() % (40 + 600), 700);
  s->SetPosition(pos);
  s->SetStarAlive();
  }

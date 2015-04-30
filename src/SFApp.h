@@ -25,7 +25,6 @@ public:
   int     OnExecute();
   void    OnUpdateWorld();
   void    OnRender();
-
   void    FireProjectile();
   void    GameOver();
   void    Pause();
@@ -44,10 +43,10 @@ private:
   list<shared_ptr<SFAsset> > alienmissiles;
   list<shared_ptr<SFAsset> > healthpacks;
   list<shared_ptr<SFAsset> > stars;
+  list<shared_ptr<SFAsset> > walls;
   shared_ptr<SFAsset> gameover;
 
   int fire;
-  int maxProjectiles = 6;
   int PlayerHP = 100;
   int fireN = 3;
   int Points = 0;
