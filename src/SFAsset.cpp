@@ -25,7 +25,7 @@ SFAsset::SFAsset(SFASSETTYPE type, std::shared_ptr<SFWindow> window): type(type)
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/star.png");
     break;
   case SFASSET_HEALTHPACK:
-    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/health.xcf");
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/health.png");
   break;
   case SFASSET_GAMEOVER:
   sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/gameover.png");

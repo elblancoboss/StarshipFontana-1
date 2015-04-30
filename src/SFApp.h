@@ -47,6 +47,7 @@ private:
   shared_ptr<SFAsset> gameover;
 
   int fire;
+  int maxProjectiles = 6;
   int PlayerHP = 100;
   int fireN = 3;
   int Points = 0;

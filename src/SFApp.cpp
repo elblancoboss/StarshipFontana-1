@@ -17,7 +17,7 @@ gameover = make_shared<SFAsset>(SFASSET_GAMEOVER, sf_window);
 const int number_of_aliens = 30;
 for(int i=0; i<number_of_aliens; i++) {
 auto alien = make_shared<SFAsset>(SFASSET_ALIEN, sf_window);
-auto pos = Point2 (rand() % (40 + 600), rand() %(800 + 3000));
+auto pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
 alien->SetPosition(pos);
 aliens.push_back(alien);
 }
@@ -26,7 +26,7 @@ aliens.push_back(alien);
 const int number_of_alienmissiles = 30;
 for(int i=0; i<number_of_alienmissiles; i++) {
 auto alienmissile = make_shared<SFAsset>(SFASSET_ALIENMISSILE, sf_window);
-auto alienmissile_pos = Point2 (rand() % (40 + 600), rand() %(800 + 3000));
+auto alienmissile_pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
 alienmissile->SetPosition(alienmissile_pos);
 alienmissiles.push_back(alienmissile);
 }
@@ -36,7 +36,7 @@ alienmissiles.push_back(alienmissile);
  const int number_of_coins = 2;
  for(int i=0; i<number_of_coins; i++) {
  auto coin = make_shared<SFAsset>(SFASSET_COIN, sf_window);
- auto pos = Point2 (rand() % (40 + 600), rand() %(800 + 3000));
+ auto pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
  coin->SetPosition(pos);
  coins.push_back(coin);
 }
@@ -54,7 +54,7 @@ healthpacks.push_back(healthpack);
  const int number_of_stars = 25;
  for(int i=0; i<number_of_stars; i++) {
  auto star = make_shared<SFAsset>(SFASSET_STAR, sf_window);
- auto pos = Point2 (rand() %(40 + 600), rand() %(800+800));
+ auto pos = Point2 (rand() %(40 + 600), rand() %(600+800));
  star->SetPosition(pos);
  stars.push_back(star);
  }
@@ -101,7 +101,7 @@ void SFApp::OnEvent(SFEvent& event) {
  FireProjectile();
  }
  }
-// Break out of statement.
+ //Break out of statement.
  break;
  }
  break;
@@ -134,6 +134,7 @@ const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
  }
  if(keyboardState[SDL_SCANCODE_RIGHT]) {
  player->GoEast();
+ 
  }
 
 
@@ -374,12 +375,11 @@ auto pos = Point2 (rand() % (40 + 600), 700);
   SDL_RenderPresent(sf_window->getRenderer());
 }
 
- void SFApp::FireProjectile() {
-  auto pb = make_shared<SFAsset>(SFASSET_PROJECTILE, sf_window);
-  auto v  = player->GetPosition();
-  pb->SetPosition(v);
-  projectiles.push_back(pb);
-
+void SFApp::FireProjectile() {
+auto pb = make_shared<SFAsset>(SFASSET_PROJECTILE, sf_window);
+auto v  = player->GetPosition();
+pb->SetPosition(v);
+projectiles.push_back(pb);
 }
 
 void SFApp::GameOver(){
