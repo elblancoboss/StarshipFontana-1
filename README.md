@@ -14,20 +14,12 @@ of Commander Fontana in **Starship Fontana**.
 
 ## Installation ##
 You will have to have the SDL development libraries installed on
-your system.  The easiest way to compile is to use a command-line
+your system.
+You will have to clone this repository into your own pc and all what you have to do to compile and run the game is by running the 'build' file from the command line.
 
 ```bash
-$ g++ -c src/*.cpp
-$ g++ -o starship *.o -lSDL2 -lSDL2_image
-```
-
-which will produce an executable file called "starship" in the
-top-level directory.  To execute this file do the following
-
-`$ ./starship`
- 
-from the top-level directory.  The game will expect to find the
-`assets` directory under its current working directory.
+$ ./build
+``` 
 
 ## Issues ##
 I think the SDL port has introduced some bounding box collision issues.
@@ -40,3 +32,5 @@ under the terms of the [CPL 1.0](http://opensource.org/licenses/cpl1.0.php).
 
 The event system is based on [Libsigc++](http://libsigc.sourceforge.net/)
 and is used under the [LGPL](http://www.gnu.org/copyleft/lgpl.html).
+
+Also some of the sprites used are created and edited by me.
