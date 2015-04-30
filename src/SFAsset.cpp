@@ -18,19 +18,18 @@ SFAsset::SFAsset(SFASSETTYPE type, std::shared_ptr<SFWindow> window): type(type)
   case SFASSET_COIN:
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/coin.png");
     break;
-case SFASSET_DEBRIS:
+  case SFASSET_ALIENMISSILE:
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/alienfire.png");
     break;
-case SFASSET_STAR:
+  case SFASSET_STAR:
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/star.png");
     break;
-case SFASSET_HEALTHPACK:
- sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/health.png");
-break;
-
-case SFASSET_GAMEOVER:
- sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/gameover.png");
- break;
+  case SFASSET_HEALTHPACK:
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/health.xcf");
+  break;
+  case SFASSET_GAMEOVER:
+  sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/gameover.png");
+  break;
   }
 
   if(!sprite) {
@@ -134,7 +133,7 @@ void SFAsset::GoNorth() {
  int w, h;
  SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
 
- Vector2 c = *(bbox->centre) + Vector2(0.0f, 4.0f);
+ Vector2 c = *(bbox->centre) + Vector2(0.0f, 5.0f);
 
  if(!(c.getY()-18.0f > h)) {
  bbox->centre.reset();
@@ -142,7 +141,7 @@ void SFAsset::GoNorth() {
  }
  }
  if(SFASSET_PROJECTILE == type){
- Vector2 c = *(bbox->centre) + Vector2(0.0f, 10.0f);
+ Vector2 c = *(bbox->centre) + Vector2(0.0f, 20.0f);
 bbox->centre.reset();
 bbox->centre = make_shared<Vector2>(c);
  }
@@ -150,7 +149,7 @@ bbox->centre = make_shared<Vector2>(c);
 
 void SFAsset::GoSouth() {
 if(SFASSET_PLAYER == type) {
- Vector2 c = *(bbox->centre) + Vector2(0.0f, -3.0f);
+ Vector2 c = *(bbox->centre) + Vector2(0.0f, -5.0f);
 
  if(!(c.getY() < 64.0f)) {
  bbox->centre.reset();
@@ -169,7 +168,7 @@ if(!(c.getY() < -50.0f)) {
  bbox->centre = make_shared<Vector2>(c);
 }}
 
-void SFAsset::DebrisN() {
+void SFAsset::AlienMissileN() {
 int w, h;
 SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
 
@@ -185,7 +184,7 @@ void SFAsset::AlienN() {
   int w, h;
   SDL_GetRendererOutputSize(sf_window->getRenderer(), &w, &h);
 
-  Vector2 c = *(bbox->centre) + Vector2(0.0f, -4.0f);
+  Vector2 c = *(bbox->centre) + Vector2(0.0f, -7.0f);
 if(!(c.getY() < -50.0f)) {
     bbox->centre.reset();
     bbox->centre = make_shared<Vector2>(c);
@@ -210,8 +209,8 @@ void SFAsset::SetCoinAlive() {
 	type = SFASSET_COIN;
 }
 
-void SFAsset::SetDebrisAlive() {
- type = SFASSET_DEBRIS;
+void SFAsset::SetAlienMissileAlive() {
+ type = SFASSET_ALIENMISSILE;
 }
 
 void SFAsset::SetAlienAlive() {
@@ -231,7 +230,7 @@ bool SFAsset::IsAlive() {
 }
 
 void SFAsset::HandleCollision() {
-  if(SFASSET_PROJECTILE == type || SFASSET_ALIEN == type || SFASSET_COIN == type || SFASSET_DEBRIS == type || SFASSET_STAR == type || SFASSET_HEALTHPACK == type || SFASSET_HEALTHBAR == type) {
+  if(SFASSET_PROJECTILE == type || SFASSET_ALIEN == type || SFASSET_COIN == type || SFASSET_ALIENMISSILE == type || SFASSET_STAR == type || SFASSET_HEALTHPACK == type) {
     SetNotAlive();
   }
 }

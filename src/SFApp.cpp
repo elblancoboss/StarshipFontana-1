@@ -17,17 +17,18 @@ gameover = make_shared<SFAsset>(SFASSET_GAMEOVER, sf_window);
 const int number_of_aliens = 30;
 for(int i=0; i<number_of_aliens; i++) {
 auto alien = make_shared<SFAsset>(SFASSET_ALIEN, sf_window);
-auto pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
+auto pos = Point2 (rand() % (40 + 600), rand() %(800 + 3000));
 alien->SetPosition(pos);
 aliens.push_back(alien);
 }
+
 //spawn of Alien Missiles
-const int number_of_debris = 30;
-for(int i=0; i<number_of_debris; i++) {
-auto debris = make_shared<SFAsset>(SFASSET_DEBRIS, sf_window);
-auto debris_pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
-debris->SetPosition(debris_pos);
-debrise.push_back(debris);
+const int number_of_alienmissiles = 30;
+for(int i=0; i<number_of_alienmissiles; i++) {
+auto alienmissile = make_shared<SFAsset>(SFASSET_ALIENMISSILE, sf_window);
+auto alienmissile_pos = Point2 (rand() % (40 + 600), rand() %(800 + 3000));
+alienmissile->SetPosition(alienmissile_pos);
+alienmissiles.push_back(alienmissile);
 }
 
 
@@ -35,7 +36,7 @@ debrise.push_back(debris);
  const int number_of_coins = 2;
  for(int i=0; i<number_of_coins; i++) {
  auto coin = make_shared<SFAsset>(SFASSET_COIN, sf_window);
- auto pos = Point2 (rand() % (40 + 600), rand() %(600 + 3000));
+ auto pos = Point2 (rand() % (40 + 600), rand() %(800 + 3000));
  coin->SetPosition(pos);
  coins.push_back(coin);
 }
@@ -53,7 +54,7 @@ healthpacks.push_back(healthpack);
  const int number_of_stars = 25;
  for(int i=0; i<number_of_stars; i++) {
  auto star = make_shared<SFAsset>(SFASSET_STAR, sf_window);
- auto pos = Point2 (rand() %(40 + 600), rand() %(600+800));
+ auto pos = Point2 (rand() %(40 + 600), rand() %(800+800));
  star->SetPosition(pos);
  stars.push_back(star);
  }
@@ -82,7 +83,7 @@ void SFApp::OnEvent(SFEvent& event) {
  }
  case SFEVENT_QUIT: {
  is_running = false;
-restart = false;
+ restart = false;
  break;
  }
  case SFEVENT_PAUSE:{
@@ -150,23 +151,26 @@ GameOver();
  s->CoinN();
  }
 
-  // Update projectile positions
-  for(auto p: projectiles) {
+// Update projectile positions
+for(auto p: projectiles) {
     p->GoNorth();
+
 // Remove projectile when it hits the top of the screen
  auto p_pos = p->GetPosition();
  if(p_pos.getY() > h) {
  p->HandleCollision();
  }
  }
+
 // healthpack movement
  for(auto hp : healthpacks){
  hp->CoinN();
+
 // check player collision with healthpack
  if(player->CollidesWith(hp)) {
  PlayerHP = PlayerHP + 25;
  hp->HandleCollision();
- cout << "Collected Health!" << endl;
+ cout << "Health Boost!" << endl;
  cout << "HP"<< PlayerHP << endl;
  }
  }
@@ -174,12 +178,13 @@ GameOver();
 // coin movement and collision
   for(auto c: coins) {
     c->CoinN();
+
 // Check player collision with coin
  if(player->CollidesWith(c)) {
  Points = Points + 100;
 HealthPackSeed = HealthPackSeed + 100;
  c->HandleCollision();
-cout << "Got some nuts!" << endl;
+cout << "Score Boost!" << endl;
  cout << "Score:" << Points << endl;
  }
  }
@@ -190,7 +195,7 @@ cout << "Got some nuts!" << endl;
 
 // Check player collision with alien
  if(player->CollidesWith(a)) {
- PlayerHP = PlayerHP - 15;
+ PlayerHP = PlayerHP - 10;
  a->HandleCollision();
 cout << "Hit by alien!" << endl;
  cout << "HP"<< PlayerHP << endl;
@@ -198,11 +203,12 @@ cout << "Hit by alien!" << endl;
  }
 
 // Update enemy positions
- for(auto d : debrise) {
-d->DebrisN();
+ for(auto d : alienmissiles) {
+d->AlienMissileN();
+
 // Check player collision with alien
  if(player->CollidesWith(d)) {
- PlayerHP = PlayerHP - 5;
+ PlayerHP = PlayerHP - 10;
  d->HandleCollision();
  cout << "Hit by Alien Missile!" << endl;
  cout << "HP"<< PlayerHP << endl;
@@ -213,11 +219,11 @@ d->DebrisN();
  for(auto p : projectiles) {
  for(auto a : aliens) {
  if(p->CollidesWith(a)) {
-HealthPackSeed = HealthPackSeed + 5;
- Points = Points + 5;
-p->HandleCollision();
+ HealthPackSeed = HealthPackSeed + 10;
+ Points = Points + 10;
+ p->HandleCollision();
  a->HandleCollision();
- cout << "Killed an enemy!" << endl;
+ cout << "Enemy Killed!" << endl;
  cout << "Score:" << Points << endl;
  }
  }
@@ -225,15 +231,15 @@ p->HandleCollision();
   
 
 
-// Detect projectile collision with debris
+// Detect projectile collision with alienmissile
  for(auto p : projectiles) {
- for(auto d : debrise) {
+ for(auto d : alienmissiles) {
  if(p->CollidesWith(d)) {
-HealthPackSeed = HealthPackSeed + 3;
- Points = Points + 3;
+HealthPackSeed = HealthPackSeed + 5;
+ Points = Points + 5;
  p->HandleCollision();
  d->HandleCollision();
- cout << "destroyed Alien Missile!" << endl;
+ cout << "Alien Missile destroyed!" << endl;
 cout << "Score:" << Points << endl;
 }
 }
@@ -276,6 +282,7 @@ gameover->OnRender();
 // draw healthpacks
  for(auto hp: healthpacks) {
  auto hpPos = hp->GetPosition();
+
  // if the player gains 500 points - spawn a health pack
  if( HealthPackSeed > 500){
  HealthPackSeed = HealthPackSeed - 500;
@@ -285,6 +292,7 @@ gameover->OnRender();
  hp->SetPosition(pos);
  hp->SetHealthPackAlive();
  }
+
  // render the alive healthpacks
  else if(hp->IsAlive()&& !(hpPos.getY()< 0)) {
  hp->OnRender();
@@ -318,22 +326,21 @@ gameover->OnRender();
 
 // generation of alien missiles
 
-	for(auto d: debrise) {
-auto dPos = d->GetPosition();
-if(d->IsAlive() && !(dPos.getY() < -30.0f)) {
-d->OnRender(); }
-else {
- int w, h;
- SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
-auto pos = Point2 (rand() % (40 + 600), 3000);
-d->SetPosition(pos);
-d->SetDebrisAlive();
+	for(auto d: alienmissiles) {
+  auto dPos = d->GetPosition();
+  if(d->IsAlive() && !(dPos.getY() < -30.0f)) {
+  d->OnRender(); }
+  else {
+  int w, h;
+  SDL_GetRendererOutputSize(sf_window->getRenderer(),&w,&h);
+  auto pos = Point2 (rand() % (40 + 600), 3000);
+  d->SetPosition(pos);
+  d->SetAlienMissileAlive();
 }
 }
 
  
 // generation of coin 
-
 for(auto c: coins) {
 auto cPos = c->GetPosition();
 if(c->IsAlive() && !(cPos.getY() < -30.0f)) {
@@ -351,7 +358,7 @@ c->SetCoinAlive();
 //star generation
  for(auto s: stars) {
  auto sPos = s->GetPosition();
-if(s->IsAlive() && !(sPos.getY() < -30.0f))
+ if(s->IsAlive() && !(sPos.getY() < -30.0f))
  {
  s->OnRender(); }
  else {

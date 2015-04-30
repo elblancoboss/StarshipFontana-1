@@ -21,7 +21,7 @@ using namespace std;
  * enum to mark the type of the SFAsset.  If we add more asset types then
  * the subclassing strategy becomes a better option.
  */
-enum SFASSETTYPE {SFASSET_DEAD, SFASSET_PLAYER, SFASSET_PROJECTILE, SFASSET_ALIEN, SFASSET_COIN, SFASSET_DEBRIS, SFASSET_STAR, SFASSET_HEALTHPACK, SFASSET_HEALTHBAR, SFASSET_GAMEOVER};
+enum SFASSETTYPE {SFASSET_DEAD, SFASSET_PLAYER, SFASSET_PROJECTILE, SFASSET_ALIEN, SFASSET_COIN, SFASSET_ALIENMISSILE, SFASSET_STAR, SFASSET_HEALTHPACK, SFASSET_GAMEOVER};
 
 class SFAsset {
 public:
@@ -37,22 +37,20 @@ public:
   virtual void      GoWest();
   virtual void      GoNorth();
   virtual void      GoSouth();
-  virtual void	CoinN();
-  virtual void DebrisN();
-  virtual void AlienN();
-
-virtual void	SetCoinAlive();
- virtual void	SetAlienAlive();
- virtual void	SetDebrisAlive();
+  virtual void	    CoinN();
+  virtual void      AlienMissileN();
+  virtual void      AlienN();
+  virtual void	    SetCoinAlive();
+  virtual void	    SetAlienAlive();
+  virtual void	    SetAlienMissileAlive();
   virtual void      SetNotAlive();
-virtual void SetHealthPackAlive();
-virtual void SetStarAlive();
-
+  virtual void      SetHealthPackAlive();
+  virtual void      SetStarAlive();
   virtual bool      IsAlive();
   virtual void      HandleCollision();
-
-  virtual bool                      CollidesWith(shared_ptr<SFAsset>);
+  virtual bool      CollidesWith(shared_ptr<SFAsset>);
   virtual shared_ptr<SFBoundingBox> GetBoundingBox();
+
 int PlayerHealth = 100;
 private:
   // it would be nice if we could make this into a smart pointer,

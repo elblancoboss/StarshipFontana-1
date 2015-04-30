@@ -27,35 +27,32 @@ public:
   void    OnRender();
 
   void    FireProjectile();
-void GameOver();
- void Pause();
+  void    GameOver();
+  void    Pause();
 private:
   SDL_Surface           * surface;
   bool                    is_running;
-bool is_paused;
- bool restart;
+  bool is_paused;
+  bool restart;
 
   shared_ptr<SFWindow>       sf_window;
-
   shared_ptr<SFAsset>        player;
   shared_ptr<SFBoundingBox>  app_box;
-
   list<shared_ptr<SFAsset> > projectiles;
   list<shared_ptr<SFAsset> > aliens;
   list<shared_ptr<SFAsset> > coins;
-list<shared_ptr<SFAsset> > debrise;
+  list<shared_ptr<SFAsset> > alienmissiles;
   list<shared_ptr<SFAsset> > healthpacks;
   list<shared_ptr<SFAsset> > stars;
-list<shared_ptr<SFAsset> > healthbars;
-shared_ptr<SFAsset> gameover;
+  shared_ptr<SFAsset> gameover;
 
   int fire;
-int PlayerHP = 100;
-int fireN = 3;
-int Points = 0;
- int HealthPackSeed = 0 ;
- int AliensDead = 0;
- int DebrisDead = 0;
+  int PlayerHP = 100;
+  int fireN = 3;
+  int Points = 0;
+  int HealthPackSeed = 0 ;
+  int AliensDead = 0;
+  int AlienMissilesDead = 0;
 
   SFError OnInit();
 };
